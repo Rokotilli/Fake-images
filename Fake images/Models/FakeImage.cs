@@ -1,4 +1,6 @@
-﻿namespace Fake_images.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Fake_images.Models
 {
     public class FakeImage
     {
@@ -7,7 +9,7 @@
         public string name { get; set; }
         public string original_photo_url { get; set; }
         public string original_back_url { get; set; }
-        public DateTime upload_at { get; set; } = DateTime.Now;
+        public DateTime upload_at { get; set; }
         public string resize_photo_url { get; set; }
         public string resize_back_url { get; set; }
         public DateTime resized_at { get; set; }
@@ -16,6 +18,7 @@
         public string result_photo_url { get; set; }
         public DateTime finish_at { get; set; }
 
+        [JsonIgnore]
         public User AuthorId {  get; set; }
     }
 }

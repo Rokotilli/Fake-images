@@ -10,14 +10,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FakeImagesDbContext>(cfg =>
 {
-    cfg.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+    if (builder.Environment.IsDevelopment())
+    {
+        cfg.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDeveloping"));
+    }
+    else
+    {
+        cfg.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerRelease"));
+    }
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
+});
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<JwtUtils>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<FakeImageService>();
+builder.Services.AddHttpClient("AzureComputerVision");
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -37,12 +49,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-app.Services.GetRequiredService<FakeImagesDbContext>().Database.Migrate();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.Services.GetRequiredService<FakeImagesDbContext>().Database.Migrate();
 }
 
 app.UseHttpsRedirection();

@@ -13,15 +13,11 @@ namespace Fake_images.Controllers
     [ApiController]
     [Route("[controller]")]
     public class FakeImageController : ControllerBase
-    {
-        private readonly FakeImagesDbContext _context;
-        private readonly IConfiguration _configuration;
+    {        
         private FakeImageService _fakeImageService;
 
-        public FakeImageController(FakeImagesDbContext fakeImagesDbContext, IConfiguration configuration, FakeImageService fakeImageService)
-        {
-            _context = fakeImagesDbContext;
-            _configuration = configuration;
+        public FakeImageController(FakeImageService fakeImageService)
+        {            
             _fakeImageService = fakeImageService;
         }
 
@@ -30,12 +26,17 @@ namespace Fake_images.Controllers
         {
             var result = await _fakeImageService.Upload(fakeImageRequest, User);
 
-            if (result)
+            if (result.Item1 != null)
             {
-                return Ok("Images uploaded successfully.");
+                return Ok(result.Item1);
             }
 
-            return BadRequest("Invalid files.");
+            if (result.Item1 == null && result.Item2 == null)
+            {
+                return BadRequest("Invalid images.");
+            }
+
+            return BadRequest(result.Item2);
         }
     }
 }

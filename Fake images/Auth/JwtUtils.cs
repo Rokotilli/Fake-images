@@ -25,7 +25,7 @@ namespace Fake_images.Auth
                 issuer: _appSettings["JwtIssuer"],
                 audience: _appSettings["JwtAudience"],
                 claims: new List<Claim> { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) },
-                expires: DateTime.UtcNow.AddMinutes(15),
+                expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature));
 
             return tokenHandler.WriteToken(jwt);
