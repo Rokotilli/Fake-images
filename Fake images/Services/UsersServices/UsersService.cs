@@ -1,21 +1,20 @@
-﻿using Fake_images.Auth;
-using Fake_images.Models;
+﻿using Fake_images.Models;
 using Fake_images.Models.Additional;
 using Fake_images.Models.Context;
 
-namespace Fake_images.Services
+namespace Fake_images.Services.UsersServices
 {
     public class UsersService
     {
         private readonly FakeImagesDbContext _context;
-        private readonly JwtUtils _jwtUtils;
+        private readonly JwtService _jwtService;
 
         public UsersService(
             FakeImagesDbContext context,
-            JwtUtils jwtUtils)
+            JwtService jwtService)
         {
             _context = context;
-            _jwtUtils = jwtUtils;
+            _jwtService = jwtService;
         }
 
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
@@ -27,7 +26,7 @@ namespace Fake_images.Services
                 throw new Exception("Username or password is incorrect");
             }
 
-            var jwtToken = _jwtUtils.GenerateJwtToken(check);
+            var jwtToken = _jwtService.GenerateJwtToken(check);
 
             return new AuthenticateResponse(check, jwtToken);
         }

@@ -1,6 +1,6 @@
-using Fake_images.Auth;
 using Fake_images.Models.Context;
-using Fake_images.Services;
+using Fake_images.Services.FakeImageServices;
+using Fake_images.Services.UsersServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,14 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FakeImagesDbContext>(cfg =>
 {
-    if (builder.Environment.IsDevelopment())
-    {
-        cfg.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDeveloping"));
-    }
-    else
-    {
-        cfg.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerRelease"));
-    }
+    cfg.UseSqlServer(builder.Configuration.GetConnectionString(builder.Environment.IsDevelopment() ? "SqlServerDeveloping" : "SqlServerRelease"));
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -26,9 +19,12 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<JwtUtils>();
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<FakeImageService>();
+builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<ResizeService>();
+builder.Services.AddScoped<RemoveBackService>();
+builder.Services.AddScoped<OverlayService>();
 builder.Services.AddHttpClient("AzureComputerVision");
 
 builder.Services.AddAuthorization();

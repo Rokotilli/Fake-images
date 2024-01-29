@@ -4,13 +4,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Fake_images.Auth
+namespace Fake_images.Services.UsersServices
 {
-    public class JwtUtils
+    public class JwtService
     {
         private readonly IConfiguration _appSettings;
 
-        public JwtUtils(
+        public JwtService(
             IConfiguration appSettings)
         {
             _appSettings = appSettings;

@@ -1,8 +1,8 @@
 ﻿using Fake_images.Models.Additional;
-using Fake_images.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Fake_images.Models.Context;
+using Fake_images.Services.UsersServices;
 
 namespace Fake_images.Controllers
 {
@@ -59,7 +59,7 @@ namespace Fake_images.Controllers
 
             setTokenCookie(auth.JwtToken);
 
-            return Ok();            
+            return Ok(auth);            
         }
 
         private void setTokenCookie(string token)
