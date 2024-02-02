@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
-using Fake_images.Models;
-using Fake_images.Models.Context;
+using Domain;
+using Domain.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;

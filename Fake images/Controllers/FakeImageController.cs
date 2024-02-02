@@ -1,6 +1,9 @@
 ﻿using Fake_images.Models.Additional;
 using Fake_images.Services;
 using Fake_images.Services.FakeImageServices;
+using MassTransit;
+using MassTransit.RabbitMqTransport;
+using MessageBus.Messages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -16,9 +19,12 @@ namespace Fake_images.Controllers
         private readonly ResizeService _resizeService;
         private readonly RemoveBackService _removeBackService;
         private readonly OverlayService _overlayService;
+        private readonly IPublishEndpoint _publisher;
+        
 
-        public FakeImageController(UploadService uploadService, ResizeService resizeService, RemoveBackService removeBackService, OverlayService overlayService)
+        public FakeImageController(UploadService uploadService, ResizeService resizeService, RemoveBackService removeBackService, OverlayService overlayService, IPublishEndpoint publisher)
         {
+            _publisher = publisher;
             _uploadService = uploadService;
             _resizeService = resizeService;
             _removeBackService = removeBackService;
@@ -34,18 +40,40 @@ namespace Fake_images.Controllers
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var resultUpload = await _uploadService.Upload(fakeImageRequest, User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            if (!resultUpload.IsSuccess)
+            //var resultUpload = await _uploadService.Upload(fakeImageRequest, userId);
+
+            ImagesResizeEvent imagesUploadEvent = new ImagesResizeEvent()
             {
-                return BadRequest(resultUpload.Error);
+                UserId = int.Parse(userId),
+                Name = fakeImageRequest.Name,
+                PhotoFileName = Path.GetFileName(fakeImageRequest.Photo.FileName),
+                BackGroundFileName = Path.GetFileName(fakeImageRequest.BackGround.FileName),
+            };
+
+            using (var memoryStream = new MemoryStream())
+            {
+                fakeImageRequest.Photo.CopyTo(memoryStream);
+                imagesUploadEvent.PhotoContent = memoryStream.ToArray();
+            }
+            using (var memoryStream = new MemoryStream())
+            {
+                fakeImageRequest.BackGround.CopyTo(memoryStream);
+                imagesUploadEvent.BackGroundContent = memoryStream.ToArray();
             }
 
-            var resultResize = await _resizeService.Resize(fakeImageRequest, resultUpload.BlobContainerClient, resultUpload.FakeImage, userId);
-            var resultRemoveBack = await _removeBackService.RemoveBackGround(resultUpload.BlobContainerClient, resultResize, userId, Path.GetFileName(fakeImageRequest.Photo.FileName));
-            var resultOverlay = await _overlayService.OverlayImage(fakeImageRequest, resultUpload.BlobContainerClient, resultRemoveBack, userId);
+            await _publisher.Publish(imagesUploadEvent);
 
-            return Ok(resultOverlay);
+            //if (!resultUpload.IsSuccess)
+            //{
+            //    return BadRequest(resultUpload.Error);
+            //}
+
+            //var resultResize = await _resizeService.Resize(fakeImageRequest, resultUpload.BlobContainerClient, resultUpload.FakeImage, userId);
+            //var resultRemoveBack = await _removeBackService.RemoveBackGround(resultUpload.BlobContainerClient, resultResize, userId, Path.GetFileName(fakeImageRequest.Photo.FileName));
+            //var resultOverlay = await _overlayService.OverlayImage(fakeImageRequest, resultUpload.BlobContainerClient, resultRemoveBack, userId);
+
+            return Ok();
         }
     }
 }

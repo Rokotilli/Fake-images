@@ -1,0 +1,68 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/upload",
+      "UpstreamHttpMethod": [ "Post" ],
+
+      "DownstreamPathTemplate": "/upload/upload",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "uploadapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHeaderTransform": {
+        "X-Ocelot-Key": "IAMOCELOT"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/login",
+      "UpstreamHttpMethod": [ "Post" ],
+
+      "DownstreamPathTemplate": "/user/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHeaderTransform": {
+        "X-Ocelot-Key": "IAMOCELOT"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/signup",
+      "UpstreamHttpMethod": [ "Post" ],
+
+      "DownstreamPathTemplate": "/user/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHeaderTransform": {
+        "X-Ocelot-Key": "IAMOCELOT"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/users",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/user",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHeaderTransform": {
+        "X-Ocelot-Key": "IAMOCELOT"
+      }
+    }
+  ]
+}

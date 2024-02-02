@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
-using Fake_images.Models;
+using Domain;
+using Domain.Models;
 using Fake_images.Models.Additional;
-using Fake_images.Models.Context;
 using SkiaSharp;
 
 namespace Fake_images.Services.FakeImageServices

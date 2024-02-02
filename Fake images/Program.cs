@@ -1,6 +1,6 @@
-using Fake_images.Models.Context;
+using Domain;
 using Fake_images.Services.FakeImageServices;
-using Fake_images.Services.UsersServices;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FakeImagesDbContext>(cfg =>
 {
-    cfg.UseSqlServer(builder.Configuration.GetConnectionString(builder.Environment.IsDevelopment() ? "SqlServerDeveloping" : "SqlServerRelease"));
+    cfg.UseSqlServer(builder.Configuration.GetConnectionString(builder.Environment.IsDevelopment() ? "SqlServerDeveloping" : "SqlServerRelease"), b => b.MigrationsAssembly("Fake images"));
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -19,8 +19,6 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<JwtService>();
-builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<UploadService>();
 builder.Services.AddScoped<ResizeService>();
 builder.Services.AddScoped<RemoveBackService>();
@@ -40,8 +38,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                            ValidIssuer = builder.Configuration.GetValue<string>("JwtIssuer"),
                            ValidAudience = builder.Configuration.GetValue<string>("JwtAudience"),
                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JwtSecurityKey")))
-                       };                       
+                       };
                    });
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((cxt, cfg) =>
+    {
+        cfg.Host("rabbitmq", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        cfg.ConfigureEndpoints(cxt);
+    });
+});
 
 var app = builder.Build();
 
@@ -54,8 +65,6 @@ else
 {
     app.Services.GetRequiredService<FakeImagesDbContext>().Database.Migrate();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

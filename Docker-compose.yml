@@ -1,15 +1,6 @@
 version: '3.6'
 
 services:
-    webapi:
-        container_name: webapp
-        image: webapp
-        build:
-            context: .
-            dockerfile: Fake images/Dockerfile
-        ports:
-            - 7171:8080
-
     mssql-server:
         image: mcr.microsoft.com/mssql/server
         environment:
@@ -19,8 +10,73 @@ services:
         ports:
           - "1433:1433"
 
-    redis:
-        container_name: redis
-        image: redis:latest
+    rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3.11-management
         ports:
-          - "6379:6379"
+            - "5672:5672"
+            - "15672:15672"
+
+    apigateway:
+        container_name: apigateway
+        image: apigateway
+        build:
+            context: .
+            dockerfile: OcelotGateWay/Dockerfile
+        ports:
+            - 7171:8080    
+
+    userapi:
+        container_name: userapi
+        image: userapi
+        build:
+            context: .
+            dockerfile: UserApi/Dockerfile
+        ports:
+            - 7173:8080
+        depends_on:
+            - mssql-server
+
+    uploadapi:
+        container_name: uploadapi
+        image: uploadapi
+        build:
+            context: .
+            dockerfile: UploadApi/Dockerfile
+        ports:
+            - 7174:8080
+        depends_on:
+            - mssql-server
+
+    resizeapi:
+        container_name: resizeapi
+        image: resizeapi
+        build:
+            context: .
+            dockerfile: ResizeApi/Dockerfile
+        ports:
+            - 7175:8080
+        depends_on:
+            - mssql-server
+
+    removebackapi:
+        container_name: removebackapi
+        image: removebackapi
+        build:
+            context: .
+            dockerfile: RemoveBackApi/Dockerfile
+        ports:
+            - 7176:8080
+        depends_on:
+            - mssql-server
+
+    overlayapi:
+        container_name: overlayapi
+        image: overlayapi
+        build:
+            context: .
+            dockerfile: OverlayApi/Dockerfile
+        ports:
+            - 7177:8080
+        depends_on:
+            - mssql-server
