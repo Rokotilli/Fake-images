@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake images", "Fake images\Fake images.csproj", "{13EBABFE-1E14-4CE5-801B-9A6D4560DD58}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{A0B7F386-DEE3-482C-91AF-399F473834F6}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
@@ -22,9 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResizeApi", "ResizeApi\ResizeApi.csproj", "{2C34A7C0-42CA-4B2C-85E6-47B05316EBA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveBackApi", "RemoveBackApi\RemoveBackApi.csproj", "{84A931A9-02E5-413F-BB21-7411C7F113E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoveBackApi", "RemoveBackApi\RemoveBackApi.csproj", "{84A931A9-02E5-413F-BB21-7411C7F113E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverlayApi", "OverlayApi\OverlayApi.csproj", "{40674A83-DA03-46BB-BF60-219259C05EA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OverlayApi", "OverlayApi\OverlayApi.csproj", "{40674A83-DA03-46BB-BF60-219259C05EA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +30,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{13EBABFE-1E14-4CE5-801B-9A6D4560DD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13EBABFE-1E14-4CE5-801B-9A6D4560DD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13EBABFE-1E14-4CE5-801B-9A6D4560DD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13EBABFE-1E14-4CE5-801B-9A6D4560DD58}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA0145F8-0DD8-48D8-8341-A15A754D41A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA0145F8-0DD8-48D8-8341-A15A754D41A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA0145F8-0DD8-48D8-8341-A15A754D41A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
